@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+    /* @page { 
+        size: landscape;
+    }
+    body { 
+        writing-mode: tb-rl;
+    } */
+    </style>
+   <title>
+       Printable Routine
+   </title>
+</head>
+<body>
+    
+<script>
+     // "use strict";
+    var teacher_initial_arr = [];
+
+
+//comments haru:
+// create element rather than document write....
+// writing format for document file for word
+
+//NOTE : .......Date ani time are hard coded ....for taking that from database or index.html we need to first store it as well in db....however if date and time are to be remained as it is...it seems fine...
+
+//also data from main for only different table/routines name info only....
+
+    const electron = require('electron');
+    const {ipcRenderer} = electron;
+    const { remote } = require('electron');
+    let doc_dest = "";
+    let doc_full_path = "";
+    let table_name = "";
+    var new_span_count;
+
+
+    let el_1 = document.createElement("div");
+    el_1.id = "a";
+    document.body.appendChild(el_1);
+
+
+    let el_2 = document.createElement("div");
+    el_2.align = "center";
+    el_2.id = "heading";
+    document.getElementById("a").appendChild(el_2);
+
+    let el_3_1 = document.createElement("h");
+    el_3_1.innerHTML = "TRIBHUVAN UNIVERSITY  ";
+    document.getElementById("heading").appendChild(el_3_1);
+
+    let el_3_3 = document.createElement("h4");
+    let el_3_3_bold = document.createElement("b");
+    el_3_3_bold.innerHTML = "INSTITUTE OF ENGINEERING , PULCHOWK CAMPUS ";
+    el_3_3.appendChild(el_3_3_bold);
+    document.getElementById("heading").appendChild(el_3_3);
+
+    let el_3_5 = document.createElement("h4");
+    el_3_5.innerHTML = "Department of Electronics and Computer Engineering  ";
+    document.getElementById("heading").appendChild(el_3_5);
+
+    let el_3_6_1 = document.createElement("h4");
+    el_3_6_1.id = "course_div_id";
+    document.getElementById("heading").appendChild(el_3_6_1);
+
+    let el_3_6_2 = document.createElement("u");
+    el_3_6_2.id = "course_full_name";
+    el_3_6_2.innerHTML = "r";
+    document.getElementById("course_div_id").appendChild(el_3_6_2);
+
+    let el_3_8 = document.createElement("div");
+    el_3_8.id = "course_div";
+    document.getElementById("heading").appendChild(el_3_8);
+
+    let el_3_8_1 = document.createElement("h4");
+    el_3_8_1.id = "course_type";
+    el_3_8_1.innerHTML = "Class Routine of Batch :  ";
+    document.getElementById("course_div").appendChild(el_3_8_1);
+
+    let el_3_8_2 = document.createElement("b");
+    el_3_8_2.id = "batch_id";
+    el_3_8_2.innerHTML = "OKAy";
+    document.getElementById("course_type").appendChild(el_3_8_2);
+
+    let el_3_9 = document.createElement("div");
+    el_3_9.id = "level_bef_table";
+    document.getElementById("heading").appendChild(el_3_9);
+
+    let el_3_9_1 = document.createElement("span");
+    el_3_9_1.id = "level_id";
+    el_3_9_1.style.display = "inline-block";
+    el_3_9_1.style.width = "15%";
+    el_3_9_1.innerHTML = "Level: Masters";
+    document.getElementById("level_bef_table").appendChild(el_3_9_1);
+
+    let el_sp_1 = document.createElement("span");
+    el_sp_1.style.display = "inline-block";
+    el_sp_1.style.width = "5%";
+    el_sp_1.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    document.getElementById("level_bef_table").appendChild(el_sp_1);
+
+    let el_3_9_2 = document.createElement("span");
+    el_3_9_2.id = "Program_id";
+    el_3_9_2.style.display = "inline-block";        
+    el_3_9_2.style.width = "15%";
+    el_3_9_2.innerHTML = "Program: "
+    document.getElementById("level_bef_table").appendChild(el_3_9_2);
+
+     let el_sp_2 = document.createElement("span");
+    el_sp_2.style.display = "inline-block";
+    el_sp_2.style.width = "5%";
+    el_sp_2.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    document.getElementById("level_bef_table").appendChild(el_sp_2);
+
+    let el_3_9_3 = document.createElement("span");
+    el_3_9_3.id = "year_id";
+    el_3_9_3.style.display = "inline-block";
+    el_3_9_3.style.width = "15%";
+    el_3_9_3.innerHTML = "Year: "
+    document.getElementById("level_bef_table").appendChild(el_3_9_3);
+
+     let el_sp_3 = document.createElement("span");
+    el_sp_3.style.display = "inline-block";
+    el_sp_3.style.width = "5%";
+    el_sp_3.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    document.getElementById("level_bef_table").appendChild(el_sp_3);
+
+
+    let el_3_9_4 = document.createElement("span");
+    el_3_9_4.id = "part_id";
+    el_3_9_4.style.display = "inline-block";
+    el_3_9_4.style.width = "15%";
+    el_3_9_4.innerHTML = "Part: "
+    document.getElementById("level_bef_table").appendChild(el_3_9_4);
+
+     let el_sp_4 = document.createElement("span");
+    // el_3_9_1.id = "level_id";
+    el_sp_4.style.display = "inline-block";
+    el_sp_4.style.width = "5%";
+    el_sp_4.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    document.getElementById("level_bef_table").appendChild(el_sp_4);
+
+    let el_3_9_5 = document.createElement("span");
+    el_3_9_5.id = "effective_date_id";
+    el_3_9_5.style.display = "inline-block";
+    el_3_9_5.style.width = "20%";
+    el_3_9_5.innerHTML = "Effective from: "
+    document.getElementById("level_bef_table").appendChild(el_3_9_5);
+
+    let el_3_9_5_brk= document.createElement("p");
+    // el_3_9_5_brk.innerHTML = "&nbsp;"
+    document.getElementById("level_bef_table").appendChild(el_3_9_5_brk);
+    
+    let el_4 = document.createElement("table");
+    el_4.style.borderStyle ="none";
+    el_4.style.borderCollapse = "collapse";
+
+    el_4.cellpadding = 15;
+    el_4.border = 1;
+    el_4.id = "top_table";
+    el_4.align = "center";
+    document.getElementById("a").appendChild(el_4);
+
+    let el_5 = document.createElement("tr");
+    el_5.id = "top_row";
+    document.getElementById("top_table").appendChild(el_5);
+
+    let el_6 = document.createElement("th");
+    let el_6_bold = document.createElement("b");
+    el_6_bold.innerHTML = "Day/time";
+    el_6.appendChild(el_6_bold);
+    document.getElementById("top_row").appendChild(el_6);
+
+
+    let el_7 = document.createElement("th");
+    let el_7_bold = document.createElement("b");
+    el_7_bold.innerHTML = "6:30-8:00 AM";
+    el_7.appendChild(el_7_bold);
+    document.getElementById("top_row").appendChild(el_7);
+
+    let el_8 = document.createElement("th");
+    let el_8_bold = document.createElement("b");
+    el_8_bold.innerHTML = "8:00-9:30 AM";
+    el_8.appendChild(el_8_bold);
+    document.getElementById("top_row").appendChild(el_8);
+
+
+    let table = document.getElementById('top_table');
+
+
+    let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const sqlite3 = require('sqlite3').verbose();
+    let db_name = "dummydata.sqlite3";
+    let db_Path = __dirname + "/" + db_name;
+    let db = new sqlite3.Database(db_Path);
+    let Batch_yr = 0;
+    let Program_full_name = "C";
+    let Program_acronym_name = "R";
+    let Year_yr = 1999;
+    let Part_yr = 2;
+    var supervisor_name = "z";
+    var supervisor_initials = "b";
+    var supervisor_position = "r";
+    let effective_date = "4";
+    let el_tab = 'a';
+    var span_count ;
+
+    let el_3_9_0 = document.createElement("br");
+    document.getElementById("a").appendChild(el_3_9_0);
+
+    let el_3_9_02 = document.createElement("br");
+    document.getElementById("a").appendChild(el_3_9_02);
+
+    let el_3_9_03 = document.createElement("br");
+    document.getElementById("a").appendChild(el_3_9_03);
+
+    let el_9= document.createElement("div");
+    el_9.id = "talako_div";
+
+    el_tab = document.createElement("table");
+    el_tab.style.borderStyle ="none";
+    el_tab.style.borderCollapse = "collapse";
+
+    el_tab.cellpadding = 15;
+    el_tab.border = 0;
+    el_tab.id = "bottom_table";
+    el_tab.align = "left";
+    el_9.appendChild(el_tab);
+   
+    document.getElementById("a").appendChild(el_9);
+    let ellast_brk= document.createElement("h4");
+    document.getElementById("a").appendChild(ellast_brk);
+
+    let el_footer = document.createElement("p")
+    let el_footer_bold = document.createElement("b");
+    el_footer_bold.innerHTML = "CC: "
+    el_footer.appendChild(el_footer_bold);
+    let el_footer_span = document.createElement("span");
+    el_footer.id = "footer_cc";
+    el_footer_span.innerHTML = " Head of Department, Administration";
+    el_footer.appendChild(el_footer_span);
+    document.getElementById("a").appendChild(el_footer);
+    
+    db.serialize(function () {
+
+        let supervisor_sql_command = `SELECT Name Name, Initials Initials, Position Position from Supervisor WHERE Id = 1`;
+        db.get(supervisor_sql_command,(err, row) => {
+            if (err) {
+                return console.error(err.message);
+            }
+            supervisor_name =row.Name;
+            supervisor_initials = row.Initials;
+            supervisor_position = row.Position;
+        });
+            
+    });
+
+    //when control comes from main window to this window...then control sent to main process for data 
+
+    ipcRenderer.send('print-to-Word2');
+
+    //receiving data i.e table name from main process
+
+    ipcRenderer.on('doc_name',(event, Routine_name) =>{
+        table_name = Routine_name;
+        let teacher_initial_set = new Set();
+
+        span_count = 0;
+        
+        db.serialize(function () {
+            let initial_sql_command = `SELECT Batch Batch, Program_full Program_full, Program_acronym Program_acronym, Year Year, Part Part ,Effective_from Effective_from from "${table_name}" WHERE Table_id = 1`;
+            db.get(initial_sql_command,(err, row) => {
+                if (err) {
+                    return console.error(err.message);
+                }
+                // console.log(row.Batch);/
+                Batch_yr = row.Batch;
+                Program_full_name = row.Program_full;
+                Program_acronym_name = row.Program_acronym;
+                Year_yr = row.Year;
+                Part_yr = row.Part;
+                effective_date = row.Effective_from;
+                // console.log(Year_yr);
+                // console.log(Part_yr);
+
+                document.getElementById("course_full_name").innerHTML = Program_full_name;
+                document.getElementById("batch_id").innerHTML = Batch_yr;
+                document.getElementById("Program_id").innerHTML += Program_acronym_name;
+                document.getElementById("year_id").innerHTML += Year_yr.toString() ;
+                document.getElementById("part_id").innerHTML += Part_yr.toString() ;
+                document.getElementById("effective_date_id").innerHTML += effective_date;
+
+            });
+
+            for(let i = 0; i< days.length; i++){
+                let sqlCommand = `SELECT Teacher Teacher, Subject Subject from "${table_name}" WHERE Day = "${days[i]}"`;
+
+                //data for days column from this file...i.e hardcoded
+                let newRow = table.insertRow(i + 1);
+                    let newCell = newRow.insertCell(0);
+                    let bold_ele = document.createElement("b");
+                    let newText = document.createTextNode(days[i]);
+                    bold_ele.appendChild(newText);
+                    newCell.appendChild(bold_ele);
+                    let k = 0;
+
+                db.all(sqlCommand, [], (err, rows)=>{
+                    if (err) {
+                        throw err;
+                    }
+                    //inserting rows after rows...in the document from the routine table
+
+                    rows.forEach((row)=>{
+                        k++;
+                        let newCell1 = newRow.insertCell(k);
+                        let subject_name = document.createElement("p");
+                        subject_name.innerHTML = row.Subject;
+                        let teacher_name = document.createElement("p");
+                        if(row.Teacher != ""){
+                            teacher_name.innerHTML = "-" + row.Teacher;
+                        }
+                        // console.log(row.Teacher);
+
+                        if (teacher_initial_set.has(row.Teacher) || row.Teacher == ""){}
+                        else{
+                            let input_ele =  row.Teacher;
+                           console.log(span_count);
+                           span_count = span_count + 1;
+                            if(span_count <= 4){
+                                if(span_count == 1){
+                                    let newRow_1 = el_tab.insertRow(span_count-1);
+                                    let newCell_1 = newRow_1.insertCell(0);
+                                    let newText_1 = document.createTextNode("......................................................................");
+
+                                    let name_teach_sql = `SELECT Name Name from Teacher WHERE Initials = "${row.Teacher}"`;
+                                    let teach_name = "a";
+                                    // console.log(row.Teacher);
+                                    db.get(name_teach_sql,(err, row2) => {
+                                        if (err) {
+                                            return console.error(err.message);
+                                        }
+                                        teach_name = row2.Name;
+                                        // console.log(teach_name);
+                                        newCell_1.appendChild(newText_1);
+                                        let newCell1_2 = newRow_1.insertCell(1);
+                                        let tech_ini = document.createElement("p");
+                                        tech_ini.innerHTML =row.Teacher + ":-  " + teach_name;
+                                        newCell1_2.appendChild(tech_ini);
+                                    });
+                                    
+
+                                }
+                                else if(span_count == 2){
+                                    let newRow_1 = el_tab.insertRow(span_count-1);
+                                    let newCell_1 = newRow_1.insertCell(0);
+                                    let newText_1 = document.createTextNode(supervisor_name);
+                                    let name_teach_sql = `SELECT Name Name from Teacher WHERE Initials = "${row.Teacher}"`;
+                                    let teach_name = "a";
+                                    // console.log(row.Teacher);
+                                    db.get(name_teach_sql,(err, row2) => {
+                                        if (err) {
+                                            return console.error(err.message);
+                                        }
+                                        teach_name = row2.Name;
+                                        console.log(teach_name);
+                                        newCell_1.appendChild(newText_1);
+                                        let newCell1_2 = newRow_1.insertCell(1);
+                                        let tech_ini = document.createElement("p");
+                                        tech_ini.innerHTML =row.Teacher + ":-  " + teach_name;
+                                        newCell1_2.appendChild(tech_ini);
+                                    });
+
+                                }
+                                else if (span_count == 3){
+                                    let newRow_1 = el_tab.insertRow(span_count-1);
+                                    let newCell_1 = newRow_1.insertCell(0);
+                                    let newText_1 = document.createTextNode(supervisor_position);
+                                    let name_teach_sql = `SELECT Name Name from Teacher WHERE Initials = "${row.Teacher}"`;
+                                    let teach_name = "a";
+                                    // console.log(row.Teacher);
+                                    db.get(name_teach_sql,(err, row2) => {
+                                        if (err) {
+                                            return console.error(err.message);
+                                        }
+                                        teach_name = row2.Name;
+                                        // console.log(teach_name);
+                                        newCell_1.appendChild(newText_1);
+                                        let newCell1_2 = newRow_1.insertCell(1);
+                                        let tech_ini = document.createElement("p");
+                                        tech_ini.innerHTML =row.Teacher + ":-  " + teach_name;
+                                        newCell1_2.appendChild(tech_ini);
+                                    });
+                                }
+                                else{
+                                    let newRow_1 = el_tab.insertRow(span_count-1);
+                                    let newCell_1 = newRow_1.insertCell(0);
+                                    let newText_1 = document.createTextNode(Program_full_name);
+                                    let name_teach_sql = `SELECT Name Name from Teacher WHERE Initials = "${row.Teacher}"`;
+                                    let teach_name = "a";
+                                    console.log(row.Teacher);
+                                    db.get(name_teach_sql,(err, row2) => {
+                                        if (err) {
+                                            return console.error(err.message);
+                                        }
+                                        teach_name = row2.Name;
+                                        console.log(teach_name);
+                                        newCell_1.appendChild(newText_1);
+                                        let newCell1_2 = newRow_1.insertCell(1);
+                                        let tech_ini = document.createElement("p");
+                                        tech_ini.innerHTML =row.Teacher + ":-  " + teach_name;
+                                        newCell1_2.appendChild(tech_ini);
+                                    });
+                                }
+                            }
+                            else{
+
+                                let newRow_1 = el_tab.insertRow(span_count-1);
+                                let newCell_1 = newRow_1.insertCell(0);
+                                let name_teach_sql = `SELECT Name Name from Teacher WHERE Initials = "${row.Teacher}"`;
+                                    let teach_name = "a";
+                                    // console.log(row.Teacher);
+                                    db.get(name_teach_sql,(err, row2) => {
+                                        if (err) {
+                                            return console.error(err.message);
+                                        }
+                                        teach_name = row2.Name;
+                                        // console.log(teach_name);
+                                        // newCell_1.appendChild(newText_1);
+                                        let newCell1_2 = newRow_1.insertCell(1);
+                                        let tech_ini = document.createElement("p");
+                                        tech_ini.innerHTML =row.Teacher + ":-  " + teach_name;
+                                        newCell1_2.appendChild(tech_ini);
+                                    });;
+
+                            // console.log(row.Teacher);
+                            }
+                        }
+                        teacher_initial_set.add(row.Teacher);                      
+                        newCell1.appendChild(subject_name);
+                        newCell1.appendChild(teacher_name);
+                    });
+                    console.log(span_count);
+
+                    if(i == 5 && span_count <= 4 ){
+                        new_span_count = span_count;
+                        console.log(span_count);
+                        if(new_span_count == 0){
+                            let newRow_1 = el_tab.insertRow( 0 );
+                            let newCell_1 = newRow_1.insertCell(0);
+                            let newText_1 = document.createTextNode("......................................................................");
+                            newCell_1.appendChild(newText_1);
+                            new_span_count = new_span_count +1;
+                        }
+
+                        if(new_span_count == 1){
+                            let newRow_1 = el_tab.insertRow(new_span_count);
+                            let newCell_1 = newRow_1.insertCell(0);
+                            let newText_1 = document.createTextNode(supervisor_name);
+                            newCell_1.appendChild(newText_1);
+                            new_span_count = new_span_count +1;
+
+                        }
+                        if (new_span_count == 2){
+                            let newRow_1 = el_tab.insertRow(new_span_count);
+                            let newCell_1 = newRow_1.insertCell(0);
+                            let newText_1 = document.createTextNode(supervisor_position);
+                            newCell_1.appendChild(newText_1);
+                            new_span_count = new_span_count +1;
+
+                        }
+                        if (new_span_count == 3){
+                            let newRow_1 = el_tab.insertRow(new_span_count);
+                            let newCell_1 = newRow_1.insertCell(0);
+                            let newText_1 = document.createTextNode(Program_full_name);
+                            newCell_1.appendChild(newText_1);
+                            new_span_count = new_span_count +1;
+                            
+                        }
+
+
+                    }
+
+                });  
+
+
+
+            } 
+
+                
+            
+            
+                // console.log(el_tab);
+        });
+            
+    });
+    // exported function for converting the so build html file as doc_file to be a doc file.
+
+    //NOTE: if there is enough time or if it is asked of us, to set path of the exported doc_file in the project directory..
+    // then,..let's see afterwards....
+
+    function exportHTML(table_name){
+        let header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
+            "xmlns:w='urn:schemas-microsoft-com:office:word' " +
+            "xmlns='https://www.w3.org/TR/html52/'>" +
+            "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
+        let footer = "</body></html>";
+        let sourceHTML = header + document.getElementById("a").innerHTML + footer;
+
+        let source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+        let fileDownload = document.createElement("a");
+        document.body.appendChild(fileDownload);
+        fileDownload.href = source;
+        doc_name = table_name + ".docx";
+        fileDownload.download = doc_name;
+        fileDownload.click();
+        document.body.removeChild(fileDownload);
+    }
+
+</script>
+<button id="btn-export" onclick="exportHTML(table_name);">Export to word doc</button>
+</body>
+</html>

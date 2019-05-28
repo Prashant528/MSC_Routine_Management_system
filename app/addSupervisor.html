@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Add Subject</title>
+  <title>Add Supervisor</title>
   <link rel="stylesheet" href="materialize/css/materialize.min.css">
 </head>
 <body>
   <div class="container">
     <form>
       <div>
-        <label>Enter Subject Name</label>
-        <input type="text" id="Subject_name" autofocus>
+        <label>Enter Supervisor Name</label>
+        <input type="text" id="item" autofocus>
+	      <label>Enter Initials</label>
+	      <input type="text" id="SupervisorInitials" autofocus>
+        <label>Enter Position</label>
+        <input type="text" id="SupervisorPosition" autofocus>
+
       </div>
       <button class="waves-effect waves-light btn" type="reset" id="cancelButton">Cancel</button>
-      <button class="waves-effect waves-light btn" type="submit">Add Subject</button>
+      <button class="waves-effect waves-light btn" type="submit">Add Supervisor</button>
     </form>
   </div>
 
@@ -24,9 +29,11 @@
 
     function submitForm(e){
       e.preventDefault();
-      const item = document.querySelector('#Subject_name').value;
+      const Supervisor_name = document.querySelector('#item').value;
+      const Supervisor_initials = document.querySelector('#SupervisorInitials').value;
+      const Supervisor_position = document.querySelector('#SupervisorPosition').value;
       console.log(ipcRenderer);
-      ipcRenderer.send('Subject:add', item);
+      ipcRenderer.send('Supervisor:add', Supervisor_name,Supervisor_initials,Supervisor_position);
     }
 
     //sending message to exit the window if cancel button is clicked.

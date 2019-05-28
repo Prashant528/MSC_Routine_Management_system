@@ -1,18 +1,18 @@
 const electron = require('electron');
 const path = require('path');
 const url = require('url');
-const ipc= electron.ipcMain;
-const ipc_r=require('electron').ipcRenderer;
-//set Env
 process.env.NODE_ENV = 'development';
 const {app, BrowserWindow, Menu, ipcMain} = electron;
-var fs = require('fs');
+const fs = require('fs');
+const os = require('os');
 const {shell} = require('electron') // deconstructing assignment
-
-
-var db='';
+const dir_prefix_name = app.getAppPath();
+const pdf_path = dir_prefix_name + "/pdf_dir/";
+const word_path = dir_prefix_name + "/word_dir/";
+let db='';
 let mainWindow;
 let addWindow;
+let Table_name = "";
 
 
 app.on('window-all-closed', function() {
@@ -23,12 +23,9 @@ app.on('window-all-closed', function() {
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600});
-
-  // and load the index.html of the app.
-  //mainWindow.loadURL('file://' + __dirname + '/index.html');
-     mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
+  mainWindow = new BrowserWindow({width: 1000, height: 720});
+    mainWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'menu.html'),
     protocol: 'file:',
     slashes:true
   }));
@@ -42,19 +39,20 @@ app.on('ready', function() {
 	  app.quit();
   });
 
+  /*
   // Build menu from template
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   // Insert menu
   Menu.setApplicationMenu(mainMenu);
-
+  */
 });
 
 // Handle add item window
 function createWindow(TITLE,HTML_FILE){
   addWindow = new BrowserWindow({
     show:false,
-    width: 400,
-    height:300,
+    width: 1000,
+    height:720,
     title:TITLE,
     //titleBarStyle: 'default',
     parent: mainWindow 
@@ -74,12 +72,23 @@ function createWindow(TITLE,HTML_FILE){
   addWindow.on('close', function(){
     addWindow = null;
   });
+  return addWindow;
 }
 
 
 // Catch item:add
 ipcMain.on('Teacher:add', function(e, teacher_name, teacher_initials){
   mainWindow.webContents.send('Teacher:Store',teacher_name, teacher_initials);
+  addWindow.close();
+  // Still have a reference to addWindow in memory. Need to reclaim memory (Grabage collection)
+  //addWindow = null;
+});
+
+ipcMain.on('Supervisor:add', function(e, Supervisor_name, Supervisor_initials, Supervisor_position){
+  // console.log(Supervisor_name);
+  // console.log(Supervisor_initials);
+  // console.log(Supervisor_position);
+  mainWindow.webContents.send('Supervisor:Store',Supervisor_name, Supervisor_initials,Supervisor_position);
   addWindow.close();
   // Still have a reference to addWindow in memory. Need to reclaim memory (Grabage collection)
   //addWindow = null;
@@ -98,127 +107,120 @@ ipcMain.on('Database:add', function(e, item){
   console.log(item);
   mainWindow.webContents.send('DataBase:Create', item);
   addWindow.close();
+  createWindow("Students' Routine", "index.html");
+  // Still have a reference to addWindow in memory. Need to reclaim memory (Grabage collection)
+  //addWindow = null;
+});
+
+ipcMain.on('Routine:add', function(e, Routine_name, batch_yr, prog_full, prog_acr, year_rot, yr_part){
+  Table_name = Routine_name;
+  console.log(Table_name);    
+  mainWindow.webContents.send('Routine:Create', Table_name,batch_yr, prog_full, prog_acr, year_rot, yr_part);
+  addWindow.close();
   // Still have a reference to addWindow in memory. Need to reclaim memory (Grabage collection)
   //addWindow = null;
 });
 
 
+ipcMain.on('Routine:old', function(e, Routine_name){
+  Table_name = Routine_name;
+  console.log(Table_name);
+  mainWindow.webContents.send('Routine:append', Table_name);
+  addWindow.close();
+  // Still have a reference to addWindow in memory. Need to reclaim memory (Grabage collection)
+  //addWindow = null;
+});
 
-// Create menu template
-const mainMenuTemplate =  [
-  // Each object is a dropdown
-  {
-    label: 'File',
-    submenu:[
-      {
-        label:'Update Old Routine',
-        accelerator:process.platform == 'darwin' ? 'Command+o' : 'Ctrl+o',
-        click(){
-          ipcMain.on('dir:open', function(e, db){
-            console.log(db);
-            mainWindow.webContents.send('dir:open', db);
-            addWindow.close();
-            // Still have a reference to addWindow in memory. Need to reclaim memory (Grabage collection)
-            //addWindow = null;
-          });
 
-          //shell.openItem('./databases')
-          // fs.readFile(p, 'utf8', function (err, data) {
-          // if (err) return console.log(err);
-          // data is the contents of the text file we just read
+//EDIT FROM PRASHANT
+//Button clicks handler.
+//Every button in the program sends a "button clicked" event and ID as the parameter.
+//some clicks might not have functionality.
 
-          
-        }
-      },
-
-      
-      {
-	      label:'Create New Routine',
-	      accelerator:process.platform == 'darwin' ? 'Command+N' : 'Ctrl+N',
-	      click(){
-		      createWindow("New Routine","databaseName.html");
-	      }
-      },
-
-      {
-        label:'Print',
-        accelerator:process.platform == 'darwin' ? 'Command+P' : 'Ctrl+P',
-        click(){
-         // createAddWindow();
-                print_page();
-        }
-      },
-      {
-        //label:'Clear Items',
-        label:'Save',
-        accelerator:process.platform == 'darwin' ? 'Command+s' : 'Ctrl+s',
-        click(){
-         // mainWindow.webContents.send('item:clear');
-
-        }
-      },
-      {
-        label: 'Quit',
-        accelerator:process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
-        click(){
-          app.quit();
-        }
-      }
-    ]
-  },
-  {
-    label: 'Instructor',
-	  submenu:[
-		 {
-		  	label:'Add Teacher',
-			  click(){
-				  createWindow("ADD TEACHER","addTeacher.html");
-			  }
-		  }
-	  ]
-  },
-
-  {
-    label:'Subject',
-	  submenu:[
-      {
-        label:'Add Subject',
-        click(){
-          createWindow("ADD SUBJECT","addSubject.html");
-        }
-      }
-    ]
-
-  },
-
-  {
-    label: 'About',
+ipcMain.on('buttonClicked', function(e, buttonId){
+  if(buttonId==="newRoutine"){
+    createWindow("New Routine","RoutineName.html");
+    // mainWindow.webContents.send("dbName",db_name ,dir_prefix_name);
   }
-];
+  
+  else if(buttonId=="oldRoutine"){
+    createWindow("old Routine","oldRoutine.html");
+    console.log("update old routine");
+  }
+  
+  else if(buttonId == "editTeacher"){
+    createWindow("Edit Teacher","editTeacher.html");
+  }
 
-// If OSX, add empty object to menu
-if(process.platform == 'darwin'){
-  mainMenuTemplate.unshift({});
-}
+  else if(buttonId=="editCourse"){
+    createWindow("Edit Course","editSubject.html");
+  }
 
-// Add developer tools option if in dev
-if(process.env.NODE_ENV !== 'production'){
-  mainMenuTemplate.push({
-    label: 'Developer Tools',
-    submenu:[
-      {
-        role: 'reload'
-      },
-      {
-        label: 'Toggle DevTools',
-        accelerator:process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
-        click(item, focusedWindow){
-          focusedWindow.toggleDevTools();
-        }
-      }
-    ]
-  });
-}
+  else if(buttonId == "addTeacher"){
+    createWindow("Add Teacher","addTeacher.html");
+  }
+
+  else if(buttonId=="addCourse"){
+    createWindow("Add Course","addSubject.html");
+  }
+  else if(buttonId=="addSupervisor"){
+    createWindow("Add Course","addSupervisor.html");
+  }
+  else if(buttonId=="editSupervisor"){
+    createWindow("Add Course","Edit_supervisor.html");
+  }
 
 
+  // else if(buttonId=="saveRoutine"){
+  //   createWindow("Name of Routine", "databaseName.html");
+  // }
+});
 
+
+// pdf print function
+//closing the window by "cancel" button.
+ipcMain.on('closeWindow', function(e){
+  addWindow.close();
+});
+
+ipcMain.on('return_menu', function(e){
+  mainWindow.loadURL('file://' + __dirname + '/menu.html');
+
+});
+
+ipcMain.on('hideWindow', function(e){
+  addWindow.hide();
+});
+
+// ipcMain.on('print-to-pdf', function(event, table_name){
+//   table_name_ext = table_name + '.pdf'
+//   const pdfPath = path.join(pdf_path, table_name_ext);
+//   console.log(pdfPath);
+//   const win = BrowserWindow.fromWebContents(event.sender);
+
+//   win.webContents.printToPDF({}, (error, data) => {
+//     if (error) return console.log(error.message);
+
+//     fs.writeFile(pdfPath, data, err => {
+//       if (err) return console.log(err.message);
+//       shell.openExternal('file://' + pdfPath);
+//       event.sender.send('wrote-pdf', pdfPath);
+//     })
+    
+//   })
+// });
+
+// Receiving communication from index.html for new window creation and passing table_name info to main process..ie..app.js
+
+ipcMain.on('print-to-Word', function(event, table_name) {
+      Table_name = table_name;
+      secondWindow = createWindow("Word","printable.html");  
+});
+
+//receiving communication from printable.html for quering Routine_name information
+
+ipcMain.on('print-to-Word2',function(e){
+  console.log("yaay");
+  console.log(Table_name);
+  secondWindow.webContents.send('doc_name', Table_name);
+});
